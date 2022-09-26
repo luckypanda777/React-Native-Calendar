@@ -1,5 +1,9 @@
-# Travel App
-<p>An app that recommmends popular tourist destinations to users based on specified categories.</p>
+# React Native Calendar
+<p>An app that customize react-native-big-calendar</p>
+
+<h2>Features Added</h2>
+<li>Drag and Drop component</li>
+<li>Long press</li>
 
 <h2>Technologies Used</h2>
 <li>React Native</li>
@@ -12,8 +16,8 @@
 
 <h2>Setup</h2>
 <h4>Clone the repository</h4>
-<p>Via HTTPS: git clone https://github.com/nklmantey/react-native-travel-app.git</p>
-<p>Via SSH: git clone git@github.com:nklmantey/react-native-travel-app.git</p>
+<p>Via HTTPS: git clone https://github.com/luckypanda777/React-Native-Calendar.git</p>
+<p>Via SSH: git clone git@github.com:luckypanda777/React-Native-Calendar.git</p>
 
 <h4>Steps</h4>
 <li>iOS &amp; Android package installation: npm install / yarn add</li>

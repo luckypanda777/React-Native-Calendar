@@ -4,13 +4,14 @@ import Header from '../../components/Header'
 import { blurImg, whiteImg } from '../utils'
 import Icon from 'react-native-vector-icons/AntDesign'
 // import DailyScheduler from './DailyScheduler';
-import { Calendar } from 'react-native-big-calendar'
+import { Calendar } from '../../components/rn-calendar'
 import SelectDropdown from 'react-native-select-dropdown'
 import { Switch, TextInput } from 'react-native-paper';
 import AnimatedModal from '../../components/AnimatedModal'
 import { BlurView } from "@react-native-community/blur";
 import moment from 'moment'
 import AddAppointment from './AddAppointment';
+// import Draggable from 'react-native-draggable
 
 const SCREENHEIGHT = Dimensions.get('window').height;
 const SCREENWIDTH = Dimensions.get('window').width;
@@ -34,39 +35,47 @@ const Home = () => {
 
   const [events, setEvents] = useState([
     {
+      id:1,
       title: 'Coffee break',
-      start: new Date('2022-9-18T11:00'),
-      end: new Date('2022-9-18T14:00'),
+      start: new Date('2022-9-25T05:00'),
+      end: new Date('2022-9-25T09:00'),
+      color: 'red',
     },
     {
+      id:2,
       title: 'Meeting',
-      start: new Date('2022-9-19T10:00'),
-      end: new Date('2022-9-19T13:30'),
+      start: new Date('2022-9-26T01:00'),
+      end: new Date('2022-9-26T03:30'),
     },
     {
+      id:3,
       title: 'Coffee break',
-      start: new Date('2022-9-20T15:45'),
-      end: new Date('2022-9-20T20:30'),
+      start: new Date('2022-9-27T06:45'),
+      end: new Date('2022-9-27T07:30'),
     },
     {
+      id:4,
       title: 'Morning Meeting',
-      start: new Date('2022-9-20T08:00'),
-      end: new Date('2022-9-20T09:00'),
+      start: new Date('2022-9-28T08:00'),
+      end: new Date('2022-9-28T09:00'),
     },
     {
+      id:5,
       title: 'Meeting',
-      start: new Date('2022-9-21T09:00'),
-      end: new Date('2022-9-21T11:30'),
+      start: new Date('2022-9-29T02:00'),
+      end: new Date('2022-9-29T04:30'),
     },
     {
+      id:6,
       title: 'Meeting',
-      start: new Date('2022-9-22T13:00'),
-      end: new Date('2022-9-22T16:30'),
+      start: new Date('2022-9-30T06:00'),
+      end: new Date('2022-9-30T06:30'),
     },
     {
+      id:7,
       title: 'Meeting',
-      start: new Date('2022-9-23T15:45'),
-      end: new Date('2022-9-23T18:30'),
+      start: new Date('2022-9-31T05:45'),
+      end: new Date('2022-9-31T08:30'),
     },
   ])
 
@@ -106,9 +115,33 @@ const Home = () => {
 
   }
 
+  const onDragComplete = (toDate,event) => {
+    console.log("onDragComplete",event, toDate);
+    let events_ = events?.filter(e => e.id !== event.id);
+    let updatedEvent = mode=="month" ?
+        {
+          ...event,
+          start: moment(toDate * 1000)
+              .set({ hour: moment(event.start).hours(), minute: moment(event.start).minutes() })
+              .toDate(),
+          end: moment(toDate * 1000)
+              .set({ hour: moment(event.end).hours(), minute: moment(event.end).minutes() })
+              .toDate()
+        }
+        :
+        {
+          ...event,
+          start: moment(toDate * 1000).toDate(),
+          end: moment(toDate * 1000).add( moment(event.end).unix() - moment(event.start).unix() ,'seconds').toDate()
+        }
+    events_.push(updatedEvent);
+    setEvents([...events_])
+  }
+
 
    return (
     <View style={styles.container}>
+
       <ImageBackground source={ lightStyle === true ? require('../../assets/images/white_back.jpg') : require('../../assets/images/main_blur.jpg') } blurRadius={40} resizeMode="cover" style={styles.image}>
         <Header 
           title='Appointments' 
@@ -169,6 +202,7 @@ const Home = () => {
           showTime={true}
           showAdjacentMonths={true}
           sortedMonthView={true}
+          // renderEvent={CustomEventRenderer}
           onPressCell={(date) => {
             setSelectedDate(moment(date).format('YYYY-MM-DD'))
             setMode('day')
@@ -179,7 +213,10 @@ const Home = () => {
             setEditEnd(new Date(event.end))
             setEditEventSetter(true)
           }}
+          
           date={selectDate}
+          draggableEvent={true}
+          onDragComplete={onDragComplete}
         />
         {
           showEventSetter || editEventSetter === true ?  
@@ -189,7 +226,7 @@ const Home = () => {
               blurAmount={10}
             />
           : <></>
-        }      
+        }
       </ImageBackground>
       {
         showEventSetter &&
