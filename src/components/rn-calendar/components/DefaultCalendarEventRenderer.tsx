@@ -25,6 +25,8 @@ export function DefaultCalendarEventRenderer<T extends ICalendarEventBase>({
   const eventTimeStyle = { fontSize: theme.typography.xs.fontSize, color: textColor }
   const eventTitleStyle = { fontSize: theme.typography.sm.fontSize, color: textColor }
 
+  // console.log(touchableOpacityProps)
+
   return (
     <TouchableOpacity {...touchableOpacityProps}>
       {dayjs(event.end).diff(event.start, 'minute') < 32 && showTime ? (

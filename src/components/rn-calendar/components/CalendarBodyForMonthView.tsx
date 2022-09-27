@@ -116,9 +116,9 @@ function _CalendarBodyForMonthView<T extends ICalendarEventBase>({
     },
     [events, sortedMonthView],
   )
-  const rowRef = React.useRef([]);
-  const cellRef = React.useRef([]);
-  const { updateCellLayout } = React.useContext(DataContext);
+  const rowRef = React.useRef<any>([]);
+  const cellRef = React.useRef<any>([]);
+  const { updateCellLayout, isDragging } = React.useContext(DataContext);
   const onCellLayout = ({ nativeEvent }, date, rowIndex, cellIndex) => {
     rowRef.current[rowIndex]?.measure((x, y, width, height, pageX, pageY) => {
       let posY = pageY;
@@ -126,7 +126,8 @@ function _CalendarBodyForMonthView<T extends ICalendarEventBase>({
         posY =  height*(rowIndex+1);
         let time = date?.unix();
         let layout = { width, height, pageX:pageX, pageY: posY, mode:'month' };
-        updateCellLayout(time, layout, 'month')
+        //console.log("onCellLayout:Month",layout,time);
+        updateCellLayout(time, layout)
       });
     });
   }
@@ -147,7 +148,7 @@ function _CalendarBodyForMonthView<T extends ICalendarEventBase>({
         style,
       ]}
       onLayout={({ nativeEvent: { layout } }) => setCalendarWidth(layout.width)}
-      {...(draggableEvent ? {} : panResponder.panHandlers)}
+      {...(isDragging ? {} : panResponder.panHandlers)}
     >
       {weeks.map((week, i) => (
         <View

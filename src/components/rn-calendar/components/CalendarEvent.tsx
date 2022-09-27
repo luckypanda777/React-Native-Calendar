@@ -8,15 +8,7 @@ import { useTheme } from '../theme/ThemeContext'
 import { DAY_MINUTES, getRelativeTopInDay, getStyleForOverlappingEvent, typedMemo } from '../utils'
 import { DefaultCalendarEventRenderer } from './DefaultCalendarEventRenderer'
 import { DraggableComponent } from '../components/Draggable';
-
-const getEventCellPositionStyle = (start: Date, end: Date) => {
-  const relativeHeight = 100 * (1 / DAY_MINUTES) * dayjs(end).diff(start, 'minute')
-  const relativeTop = getRelativeTopInDay(dayjs(start))
-  return {
-    height: `${relativeHeight}%`,
-    top: `${relativeTop}%`,
-  }
-}
+import { DataContext } from '../context/DataContext'
 
 interface CalendarEventProps<T extends ICalendarEventBase> {
   event: T
@@ -53,6 +45,27 @@ function _CalendarEvent<T extends ICalendarEventBase>({
     () => [theme.palette.primary, ...theme.eventCellOverlappings],
     [theme],
   )
+  const { calendarHeight } = React.useContext(DataContext)
+  
+  const getEventCellPositionStyle = (start: Date, end: Date) => {
+    const relativeHeight = 100 * (1 / DAY_MINUTES) * dayjs(end).diff(start, 'minute')
+    const relativeTop = getRelativeTopInDay(dayjs(start))
+    return {
+      height: `${relativeHeight}%`,
+      top: `${relativeTop}%`
+    }
+  }
+
+  const getEventCellPositionDraggableStyle = (start: Date, end: Date) => {
+    console.log('date-diff', start, dayjs(end).diff(start, 'minute'))
+    console.log('start_top', dayjs(start))
+    const relativeHeight = 100 * (1 / DAY_MINUTES) * dayjs(end).diff(start, 'minute')
+    const relativeTop = getRelativeTopInDay(dayjs(start))
+    console.log(relativeTop * (calendarHeight * 24 - 5) / 100)
+    return {
+      height: relativeHeight * ( calendarHeight * 24 - 5 ) / 100,
+    }
+  }
 
   const touchableOpacityProps = useCalendarTouchableOpacityProps({
     event,
@@ -71,13 +84,12 @@ function _CalendarEvent<T extends ICalendarEventBase>({
     const fgColors = palettes.map((p) => p.contrastText)
     return fgColors[eventCount % fgColors.length] || fgColors[0]
   }, [eventCount, palettes])
-
-
+  
   const dragableTouchableProps =  useCalendarTouchableOpacityProps({
     event,
     eventCellStyle,
-    onPressEvent,
     injectedStyles: [
+      getEventCellPositionDraggableStyle(event.start, event.end),
       getStyleForOverlappingEvent(eventOrder, overlapOffset, palettes),
       {zIndex:1000}
     ],

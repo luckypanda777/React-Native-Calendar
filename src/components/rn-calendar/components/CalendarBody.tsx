@@ -13,7 +13,6 @@ import {
   ICalendarEventBase,
 } from '../interfaces'
 import { useTheme } from '../theme/ThemeContext'
-import { DataContext } from '../context/DataContext'
 import {
   getCountOfEventsAtEvent,
   getOrderOfEvent,
@@ -25,6 +24,7 @@ import {
 import { CalendarEvent } from './CalendarEvent'
 import { HourGuideCell } from './HourGuideCell'
 import { HourGuideColumn } from './HourGuideColumn'
+import { DataContext } from '../context/DataContext'
 
 const styles = StyleSheet.create({
   nowIndicator: {
@@ -60,6 +60,8 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   mode:string
 }
 
+
+
 function _CalendarBody<T extends ICalendarEventBase>({
   containerHeight,
   cellHeight,
@@ -86,7 +88,6 @@ function _CalendarBody<T extends ICalendarEventBase>({
 }: CalendarBodyProps<T>) {
   const scrollView = React.useRef<ScrollView>(null)
   const { now } = useNow(!hideNowIndicator)
-  const { setScrollValue } = React.useContext(DataContext);
 
   React.useEffect(() => {
     let timeout: NodeJS.Timeout
@@ -147,10 +148,7 @@ function _CalendarBody<T extends ICalendarEventBase>({
   )
 
   const theme = useTheme()
-
-  const handleScroll = (e) => {
-    setScrollValue(e.nativeEvent.contentOffset.y)
-  }
+  const { setScrollYOffset,isDragging } = React.useContext(DataContext);
 
   return (
     <React.Fragment>
@@ -164,11 +162,11 @@ function _CalendarBody<T extends ICalendarEventBase>({
         ]}
         ref={scrollView}
         scrollEventThrottle={32}
-        {...(Platform.OS !== 'web' && !draggableEvent ? panResponder.panHandlers : {})}
+        {...(Platform.OS !== 'web' && !isDragging ? panResponder.panHandlers : {})}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
         contentOffset={Platform.OS === 'ios' ? { x: 0, y: scrollOffsetMinutes } : { x: 0, y: 0 }}
-        onScroll={handleScroll}
+        onScroll={({nativeEvent})=>{setScrollYOffset(nativeEvent?.contentOffset?.y)}}
       >
         <View
           style={[u['flex-1'], theme.isRTL ? u['flex-row-reverse'] : u['flex-row']]}

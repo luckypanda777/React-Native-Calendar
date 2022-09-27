@@ -11,7 +11,7 @@ import AnimatedModal from '../../components/AnimatedModal'
 import { BlurView } from "@react-native-community/blur";
 import moment from 'moment'
 import AddAppointment from './AddAppointment';
-// import Draggable from 'react-native-draggable
+import Draggable from 'react-native-draggable'
 
 const SCREENHEIGHT = Dimensions.get('window').height;
 const SCREENWIDTH = Dimensions.get('window').width;
@@ -114,7 +114,6 @@ const Home = () => {
     setEditEventSetter(false)
 
   }
-
   const onDragComplete = (toDate,event) => {
     console.log("onDragComplete",event, toDate);
     let events_ = events?.filter(e => e.id !== event.id);
@@ -202,7 +201,7 @@ const Home = () => {
           showTime={true}
           showAdjacentMonths={true}
           sortedMonthView={true}
-          // renderEvent={CustomEventRenderer}
+          //renderEvent={CustomEventRenderer}
           onPressCell={(date) => {
             setSelectedDate(moment(date).format('YYYY-MM-DD'))
             setMode('day')

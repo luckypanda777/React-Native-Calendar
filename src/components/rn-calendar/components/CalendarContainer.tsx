@@ -31,6 +31,7 @@ import { CalendarBody } from './CalendarBody'
 import { CalendarBodyForMonthView } from './CalendarBodyForMonthView'
 import { CalendarHeader } from './CalendarHeader'
 import { CalendarHeaderForMonthView } from './CalendarHeaderForMonthView'
+import { DataContext } from '../context/DataContext'
 
 export interface CalendarContainerProps<T extends ICalendarEventBase> {
   /**
@@ -144,12 +145,14 @@ function _CalendarContainer<T extends ICalendarEventBase>({
   onDragComplete
 }: CalendarContainerProps<T>) {
   const [targetDate, setTargetDate] = React.useState(dayjs(date))
+  const { setCalendarHeight } = React.useContext(DataContext);
 
   React.useEffect(() => {
     if (date) {
       setTargetDate(dayjs(date))
     }
   }, [date])
+
 
   const allDayEvents = React.useMemo(
     () => events.filter((event) => isAllDayEvent(event.start, event.end)),
@@ -187,9 +190,14 @@ function _CalendarContainer<T extends ICalendarEventBase>({
   }, [dateRange, onChangeDate])
 
   const cellHeight = React.useMemo(
-    () => hourRowHeight || Math.max(height - 30, MIN_HEIGHT) / 24,
+    () => hourRowHeight || Math.max(height - 30, MIN_HEIGHT) / 24, 
     [height, hourRowHeight],
   )
+
+  
+  React.useEffect(() => {
+    setCalendarHeight(cellHeight)
+  }, [cellHeight])
 
   const theme = useTheme()
 
@@ -272,7 +280,7 @@ function _CalendarContainer<T extends ICalendarEventBase>({
     weekDayHeaderHighlightColor: weekDayHeaderHighlightColor,
     showAllDayEventCell: showAllDayEventCell,
   }
-  
+
   return (
     <React.Fragment>
       <HeaderComponent {...headerProps} />

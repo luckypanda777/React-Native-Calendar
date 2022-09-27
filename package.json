@@ -22,13 +22,13 @@
         "@react-navigation/drawer": "^6.4.2",
         "@react-navigation/native": "^6.0.10",
         "@react-navigation/stack": "^6.2.1",
+        "@types/react": "^18.0.21",
+        "@types/react-native": "^0.70.3",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.37",
         "react": "17.0.2",
         "react-native": "0.68.2",
         "react-native-big-calendar": "^3.2.3",
-        "react-native-calendars": "^1.1289.0",
-        "react-native-collapsible": "^1.6.0",
         "react-native-date-picker": "^4.2.5",
         "react-native-draggable": "^3.3.0",
         "react-native-gesture-handler": "^2.5.0",
@@ -41,8 +41,7 @@
         "react-native-screens": "^3.14.0",
         "react-native-select-dropdown": "^2.0.4",
         "react-native-vector-icons": "^9.2.0",
-        "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-        "tinycolor2": "^1.4.2"
+        "reanimated-bottom-sheet": "^1.0.0-alpha.22"
     },
     "devDependencies": {
         "@babel/core": "^7.18.6",

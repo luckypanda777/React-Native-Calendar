@@ -33,21 +33,23 @@ const _HourGuideCell = ({
     [calendarCellStyle],
   )
   
-  let cellRef = React.useRef([]);
+  let cellRef = React.useRef<any>([]);
   const { updateCellLayout } = React.useContext(DataContext);
 
   const onCellLayout = ({ nativeEvent }, date, hour) => {
     const time=date.hour(hour).minute(0).unix();
     cellRef?.current?.measure((x, y, width, height, pageX, pageY) => {
+      //console.log("row pageY", x, y, width, height);
       let layout = { width, height, pageX,  pageY, mode:mode };
-      updateCellLayout(time, layout, 'hour')
+      //console.log("onCellLayout:Week",layout,time);
+      updateCellLayout(time, layout)
     });
   }
 
   return (
     <View    
       ref={cellRef}
-      onLayout={e => onCellLayout(e, date, hour)}
+      onLayout={e => onCellLayout(e, date,hour)}
     >
     <TouchableWithoutFeedback 
       onPress={() => onPress(date.hour(hour).minute(0))} 

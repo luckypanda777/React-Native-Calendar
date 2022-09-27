@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import * as React from 'react'
-import { TouchableWithoutFeedback, TouchableOpacity, View, Dimensions } from 'react-native'
+import { TouchableWithoutFeedback, TouchableOpacity, View } from 'react-native'
 import Draggable from './RNDraggable';
 
 import { useTheme } from '../theme/ThemeContext'
@@ -27,32 +27,34 @@ const _Draggable = ({
 }: DraggableProps) => {
 
     const theme = useTheme()
-    const { monthCellLayouts, hourCellLayouts, scrollValue } = React.useContext(DataContext);
+    const { cellLayouts, scrollYOffset,setIsDragging } = React.useContext(DataContext);
     const [ highlightedStyle, setHighlightedStyle ] = React.useState({ });
     const [layout, setLayout] = React.useState(null);
 
     const onDragRelease = (e ,f) => {
+        //console.log('cellLayouts,',cellLayouts)
+        setIsDragging(false);
         let x = e.nativeEvent.pageX;
         let y = e.nativeEvent.pageY;
-        const cellLayouts = mode === 'month' ? monthCellLayouts : hourCellLayouts
+        //console.log('onDragRelease', x, y, e.nativeEvent)
         if (x && y) {
-            for (const [key, value] of Object.entries(cellLayouts)) {
+            for (const [key, value] of Object.entries<any>(cellLayouts)) {
+                //console.log(`${key}: ${value}`);
                 let startX = value?.pageX;
-                let endX = value?.pageX + value?.width;
-                let startY = value?.pageY;
-                let endY = value?.pageY + value?.height; 
+                let endX = startX + value?.width;
+                let startY = value?.pageY - scrollYOffset;
+                let endY = startY + value?.height;
                 let layoutMode = value.mode;
-
-                const ysc = y
-                if(mode !== 'month') ysc = ysc + scrollValue;
-
-                if (x > startX && x < endX && ysc > startY && ysc < endY && mode == layoutMode) { 
+                
+                if (x > startX && x < endX && y > startY && y < endY && mode == layoutMode) { 
+                    //console.log('onDrag Matched cell',  'x:'+x,  'y:'+y,  'startX:'+startX, 'startY:'+startY, 'scrollOffset:'+scrollYOffset, "time:"+key);
                     onDragComplete(key,event);
                 }
             }
         }
     }
     const onLongPress = () => {
+        console.log('onLongPress');
     }
     const onDrag = (e, gestureState) => {
     }
@@ -62,11 +64,11 @@ const _Draggable = ({
             <Draggable x={0} y={0} z={1000}
                 onDragRelease={onDragRelease}
                 onLongPress={onLongPress}
-                onShortPressRelease={() => { console.log('press drag'); onPress() }}
-                onPressIn={() => console.log('in press')}
-                onPressOut={() => { console.log('out press') }}
+                onShortPressRelease={() => { /*console.log('press drag');*/ onPress() }}
+                onPressIn={() => {console.log('in press'); setIsDragging(true)}}
+                onPressOut={() => { console.log('out press'); }}
                 animatedViewProps={{ height:100, width: layout?.width ? layout?.width : '100%', zIndex: 500 }}
-                touchableOpacityProps={{ onPress: () => { console.log('on press'); onPress() } }}
+                touchableOpacityProps={{ onPress: () => { /*console.log('on press');*/ onPress() } }}
                 onDrag={onDrag}
                 shouldReverse
             >
